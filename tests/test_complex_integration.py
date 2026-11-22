@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+import pytest
+
 from src.manager import Manager
 from src.models import Bill, Parameters
 
@@ -49,12 +50,6 @@ def test_get_apartment_costs_ignores_other_months_and_invalid_apartments():
     assert manager.get_apartment_costs("apart-polanka", 2025, 2) == 200.0
     # Mimo obecności rachunku w bills, brak klucza w apartments zwraca None
     assert manager.get_apartment_costs("non-existent-key", 2025, 1) is None
-=======
-
-
-from src.manager import Manager
-from src.models import Parameters
-from src.models import Bill
 
 
 def test_apartment_costs_with_optional_parameters():
@@ -97,10 +92,22 @@ def test_apartment_costs_with_optional_parameters():
 
     costs = manager.get_apartment_costs('apart-polanka', 2025, 1)
     assert costs == 910.0
-    
+
     costs = manager.get_apartment_costs('apart-polanka', 2024)
     assert costs == 1372.0
 
     costs = manager.get_apartment_costs('apart-polanka')
     assert costs == 3532.0
->>>>>>> origin/extra-integration-test
+
+
+def test_get_apartment_costs_invalid_month():
+    manager = Manager(Parameters())
+
+    with pytest.raises(ValueError):
+        manager.get_apartment_costs("apart-polanka", 2025, 13)
+
+    with pytest.raises(ValueError):
+        manager.get_apartment_costs("apart-polanka", 2025, 0)
+
+    with pytest.raises(ValueError):
+        manager.get_apartment_costs("apart-polanka", 2025, -1)
